@@ -5,12 +5,11 @@ import '../../screens/cart_screen.dart';
 import '../../screens/checkout_screen.dart';
 import '../../screens/home_screen.dart';
 import '../../screens/payment_screen.dart';
-
 // import '../../screens/splash_screen.dart';
 
 class AppRouter {
   static final GoRouter router = GoRouter(
-    initialLocation: RouteNames.productDetails,
+    initialLocation: RouteNames.home,
     routes: [
       GoRoute(
         path: RouteNames.home,
