@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'core/routers/app_router.dart';
 
 void main() {
   runApp(const MyApp());
@@ -10,16 +11,9 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: Scaffold(
-        backgroundColor: Color.fromARGB(255, 246, 245, 245),
-        body: Center(
-          child: Text(
-            'Hello World!',
-            style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
-          ),
-        ),
-      ),
+    return MaterialApp.router(
+      routerConfig: AppRouter.router,
+      debugShowCheckedModeBanner: true,
     );
   }
 }
