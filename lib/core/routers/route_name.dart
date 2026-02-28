@@ -1,6 +1,6 @@
 class RouteNames {
-  static const splash = '/';
-  static const home = '/home'; // product listing screen
+  // static const splash = '/';
+  static const home = '/'; // product listing screen
   static const productDetails = '/product_details';
   static const cart = '/cart';
   static const checkout = '/checkout';
