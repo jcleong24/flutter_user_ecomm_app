@@ -18,7 +18,7 @@ class ProductListScreen extends StatelessWidget {
           return ListTile(
             title: Text("Product $index"),
             onTap: () {
-              context.go('${RouteNames.productDetails}/$index');
+              context.push('${RouteNames.productDetails}/$index');
             },
           );
         },

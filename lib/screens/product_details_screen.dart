@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
 class ProductDetailsScreen extends StatelessWidget {
-  const ProductDetailsScreen({super.key});
+  final String productId;
+
+  const ProductDetailsScreen({super.key, required this.productId});
 
   @override
   Widget build(BuildContext context) {
@@ -9,8 +11,8 @@ class ProductDetailsScreen extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Product Details'),
       ),
-      body: const Center(
-        child: Text('Product Details Screen'),
+      body: Center(
+        child: Text('Product Details: $productId'),
       ),
     );
   }

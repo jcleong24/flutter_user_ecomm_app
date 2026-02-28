@@ -16,8 +16,11 @@ class AppRouter {
         builder: (context, state) => const ProductListScreen(),
       ),
       GoRoute(
-        path: RouteNames.productDetails,
-        builder: (context, state) => const ProductDetailsScreen(),
+        path: '${RouteNames.productDetails}/:id',
+        builder: (context, state) {
+          final productId = state.pathParameters['id']!;
+          return ProductDetailsScreen(productId: productId);
+        },
       ),
       GoRoute(
         path: RouteNames.cart,
