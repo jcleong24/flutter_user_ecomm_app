@@ -9,7 +9,7 @@ import '../../screens/payment_screen.dart';
 
 class AppRouter {
   static final GoRouter router = GoRouter(
-    initialLocation: RouteNames.productDetails,
+    initialLocation: RouteNames.home,
     routes: [
       GoRoute(
         path: RouteNames.home,
