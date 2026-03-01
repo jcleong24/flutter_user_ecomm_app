@@ -10,14 +10,14 @@ class ProductListScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Product List', style: StyleManager.headingMedium()),
+        title: Text('Product List', style: StyleManager.headingSmall()),
       ),
       body: Center(
           child: ListView.builder(
         itemCount: 5,
         itemBuilder: (context, index) {
           return ListTile(
-            title: Text("Product $index", style: StyleManager.textMedium()),
+            title: Text("Product $index", style: StyleManager.textSmall()),
             onTap: () {
               context.push('${RouteNames.productDetails}/$index');
             },
