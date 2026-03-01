@@ -1,19 +1,73 @@
-@startuml checkout_flow
+@startuml ecommerce_checkout_with_gateway
 
 actor User
-participant "Flutter App" as App
-participant "PaymentService" as PS
-participant "Dummy Gateway" as PG
+participant Product
+participant CartItem
+participant Order
+participant PaymentTransaction
+participant Backend
+participant "Payment Gateway\n(Stripe Sandbox)" as Gateway
 
-User -> App : Tap Checkout
-App -> PS : createOrder()
-PS --> App : Order(PENDING)
+== Add To Cart ==
 
-App -> PS : processPayment()
-PS -> PG : sendPaymentRequest()
-PG --> PS : APPROVED
+User -> Product : Select product
+User -> CartItem : Add product (qty)
 
-PS --> App : updateOrder(PAID)
-App --> User : Show Success Screen
+== Create Order ==
+
+User -> CartItem : Proceed to checkout
+CartItem -> Order : createOrder()
+activate Order
+Order -> Order : status = PENDING
+deactivate Order
+
+== Initiate Payment ==
+
+User -> Order : Pay order
+Order -> PaymentTransaction : createTransaction()
+activate PaymentTransaction
+PaymentTransaction -> PaymentTransaction : status = INITIATED
+deactivate PaymentTransaction
+
+== Call Backend ==
+
+PaymentTransaction -> Backend : requestPayment(orderId, amount)
+activate Backend
+
+Backend -> Gateway : createPaymentIntent()
+activate Gateway
+Gateway --> Backend : clientSecret / response
+deactivate Gateway
+
+Backend --> PaymentTransaction : paymentInitiated()
+deactivate Backend
+
+== User Confirms Payment ==
+
+User -> Gateway : confirm payment (card input)
+activate Gateway
+Gateway --> Backend : payment result (APPROVED / DECLINED)
+deactivate Gateway
+
+activate Backend
+Backend --> PaymentTransaction : update status
+deactivate Backend
+
+== Update Order ==
+
+alt Payment APPROVED
+    PaymentTransaction -> PaymentTransaction : status = APPROVED
+    PaymentTransaction --> Order : notifySuccess()
+    activate Order
+    Order -> Order : markAsPaid()
+    Order -> Order : status = PAID
+    deactivate Order
+else Payment DECLINED
+    PaymentTransaction -> PaymentTransaction : status = DECLINED
+    PaymentTransaction --> Order : notifyFailure()
+    activate Order
+    Order -> Order : status = FAILED
+    deactivate Order
+end
 
 @enduml
