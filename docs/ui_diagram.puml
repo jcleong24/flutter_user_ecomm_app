@@ -1,0 +1,28 @@
+@startuml ui_structure_diagram
+left to right direction
+
+actor User
+
+rectangle "Ecom App" as App {
+}
+
+rectangle "Splash Screen" as Splash
+rectangle "Main Screen" as Main
+rectangle "Product Listing" as ProductList
+rectangle "Product Details" as ProductDetails
+rectangle "Checkout" as Checkout
+rectangle "Cart" as Cart
+rectangle "Payment" as Payment
+
+User --> App
+
+App --> Splash
+App --> Main
+App --> ProductList
+App --> ProductDetails
+App --> Checkout
+App --> Cart    
+App --> Payment
+
+
+@enduml

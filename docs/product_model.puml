@@ -1,0 +1,50 @@
+@startuml ecommerce_model
+
+enum OrderStatus {
+  PENDING
+  PAID
+  FAILED
+  CANCELLED
+}
+
+enum PaymentStatus {
+  INITIATED
+  APPROVED
+  DECLINED
+  ERROR
+}
+
+class Product {
+  id: String
+  name: String
+  description: String
+  price: double
+  stockQty: int
+}
+
+class CartItem {
+  quantity: int
+  +subtotal(): double
+}
+
+class Order {
+  id: String
+  totalAmount: double
+  status: OrderStatus
+  createdAt: DateTime
+}
+
+class PaymentTransaction {
+  transactionId: String
+  amount: double
+  status: PaymentStatus
+  responseCode: String
+  responseMessage: String
+  createdAt: DateTime
+}
+
+Product "1" -- "*" CartItem
+CartItem "*" -- "1" Order
+Order "1" -- "1" PaymentTransaction
+
+@enduml

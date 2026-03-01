@@ -1,0 +1,19 @@
+@startuml checkout_flow
+
+actor User
+participant "Flutter App" as App
+participant "PaymentService" as PS
+participant "Dummy Gateway" as PG
+
+User -> App : Tap Checkout
+App -> PS : createOrder()
+PS --> App : Order(PENDING)
+
+App -> PS : processPayment()
+PS -> PG : sendPaymentRequest()
+PG --> PS : APPROVED
+
+PS --> App : updateOrder(PAID)
+App --> User : Show Success Screen
+
+@enduml
