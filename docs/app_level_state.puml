@@ -1,0 +1,14 @@
+@startuml app_loading_state
+title App-Level - Loading State
+
+[*] --> Loading
+
+Loading : entry / fetchFromFirebase()
+
+Loading --> Loaded : fetchSuccess(data)
+Loading --> Error : fetchFailure(error)
+
+Loaded --> Loading : refresh()
+Error --> Loading : retry()
+
+@enduml

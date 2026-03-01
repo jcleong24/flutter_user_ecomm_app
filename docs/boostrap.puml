@@ -1,0 +1,92 @@
+@startuml bootstrap
+title Overall State Handling (Global + Scoped)
+
+skinparam componentStyle rectangle
+skinparam shadowing false
+
+package "UI Layer" {
+  [Splash/Boot Screen] as Splash
+  [Main App (Tabs/Shell)] as MainUI
+  [Global Loading Overlay] as Overlay
+  [Offline Screen/Banner] as OfflineUI
+  [Maintenance Screen] as MaintUI
+  [Global Error Dialog] as GlobalErrUI
+}
+
+package "App-Level (Global)" {
+  component "AppState (Bootstrap)\n- Idle\n- Loading\n- Loaded\n- Error" as AppState
+  component "NetworkState\n- Online\n- Offline" as NetState
+  component "AuthState\n- SignedOut\n- SignedIn" as AuthState
+  component "MaintenanceFlag\n- On\n- Off" as MaintFlag
+  component "GlobalErrorHandler" as GlobalErr
+}
+
+package "Feature-Level (Scoped Providers)" {
+  component "ProductProvider\nIdle/Loading/Loaded/Error" as ProductP
+  component "CartProvider\nIdle/Updating/Updated/Error" as CartP
+  component "PaymentProvider\nIdle/Processing/Success/Error" as PaymentP
+  component "CheckoutProvider\nIdle/Submitting/Success/Error" as CheckoutP
+}
+
+package "Backend" {
+  database "Firebase (DB/Auth/Remote Config)" as Firebase
+}
+
+' -----------------------------
+' Global bootstrap flow
+' -----------------------------
+Splash --> AppState : appStart()
+AppState --> Firebase : fetchBootstrapData()\n(entry while Loading)
+Firebase --> AppState : success(data) / failure(error)
+
+' -----------------------------
+' Network monitoring
+' -----------------------------
+NetState --> AppState : gate fetch when Offline
+NetState --> ProductP : gate fetch/update
+NetState --> CartP : gate update
+NetState --> PaymentP : gate processing
+NetState --> CheckoutP : gate submit
+
+' -----------------------------
+' Auth & Maintenance
+' -----------------------------
+AuthState --> AppState : affects bootstrap scope\n(e.g. fetch profile/config)
+MaintFlag --> AppState : block app when On
+
+' -----------------------------
+' Global error handling
+' -----------------------------
+AppState --> GlobalErr : on Error
+ProductP --> GlobalErr : optional bubble-up
+CartP --> GlobalErr : optional bubble-up
+PaymentP --> GlobalErr : optional bubble-up
+CheckoutP --> GlobalErr : optional bubble-up
+
+' -----------------------------
+' UI reactions (simple rules)
+' -----------------------------
+AppState --> Overlay : show when AppState=Loading
+AppState --> Splash : show while Loading (optional)
+AppState --> MainUI : show when AppState=Loaded
+GlobalErr --> GlobalErrUI : show dialog/snackbar
+NetState --> OfflineUI : show when Offline
+MaintFlag --> MaintUI : show when Maintenance On
+
+' -----------------------------
+' Feature providers talk to Firebase
+' -----------------------------
+ProductP --> Firebase : fetchProducts()
+CartP --> Firebase : updateCart()
+PaymentP --> Firebase : createPaymentIntent()\n/ verify payment
+CheckoutP --> Firebase : submitOrder()
+
+' -----------------------------
+' Feature UI is inside Main App
+' -----------------------------
+MainUI --> ProductP : product screens
+MainUI --> CartP : cart screens
+MainUI --> PaymentP : payment screens
+MainUI --> CheckoutP : checkout screens
+
+@enduml

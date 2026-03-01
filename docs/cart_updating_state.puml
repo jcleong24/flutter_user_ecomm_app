@@ -1,0 +1,16 @@
+@startuml cart_updating_state
+title Feature State (Scoped) - Cart Updating (CartProvider)
+
+[*] --> Idle
+
+Idle --> Updating : addItem()/removeItem()/updateQty()
+Updating --> Updated : success(cart)
+Updating --> Error : failure(error)
+
+Updated --> Updating : addItem()/removeItem()/updateQty()
+Updated --> Idle : clearCart()
+
+Error --> Updating : retryLastAction()
+Error --> Idle : clearError()
+
+@enduml

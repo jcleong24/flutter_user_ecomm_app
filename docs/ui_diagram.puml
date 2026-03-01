@@ -11,7 +11,8 @@ rectangle "Main Screen" as Main
 rectangle "Product Listing" as ProductList
 rectangle "Product Details" as ProductDetails
 rectangle "Checkout" as Checkout
-rectangle "Settings" as Settings
+rectangle "Cart" as Cart
+rectangle "Payment" as Payment
 
 User --> App
 
@@ -20,7 +21,8 @@ App --> Main
 App --> ProductList
 App --> ProductDetails
 App --> Checkout
-App --> Settings
+App --> Cart    
+App --> Payment
 
 
 @enduml
