@@ -20,6 +20,7 @@ class Product {
   description: String
   price: double
   stockQty: int
+  imageUrl: String
 }
 
 class CartItem {
@@ -29,7 +30,7 @@ class CartItem {
 
 class Order {
   id: String
-  totalAmount: double
+  +totalAmount: double
   status: OrderStatus
   createdAt: DateTime
 }
@@ -43,8 +44,21 @@ class PaymentTransaction {
   createdAt: DateTime
 }
 
-Product "1" -- "*" CartItem
-CartItem "*" -- "1" Order
-Order "1" -- "1" PaymentTransaction
+Product "1" <-- "*" CartItem : references
+Order "1" *-- "*" CartItem : owns (items list)
+Order "1" -- "*" PaymentTransaction : payment attemppts (multiple retries)
+
+' ===== Notes to explain the "why" =====
+note right of Order
+Order exists first as a business record:
+- status starts as PENDING
+- totalAmount derived from CartItems
+end note
+
+note right of PaymentTransaction
+PaymentTransaction is an attempt to pay an Order:
+- INITIATED -> APPROVED/DECLINED/ERROR
+- multiple attempts possible (retries)
+end note
 
 @enduml
