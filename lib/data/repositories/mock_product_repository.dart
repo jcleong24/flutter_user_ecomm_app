@@ -23,6 +23,14 @@ class MockProductRepository implements ProductRepository {
         stockQty: 5,
         imageUrl: 'https://picsum.photos/300?2',
       ),
+      Product(
+        id: '103',
+        name: 'Running Shoes',
+        description: 'Lightweight running shoes',
+        price: 499.0,
+        stockQty: 8,
+        imageUrl: 'https://picsum.photos/300?3',
+      ),
     ];
   }
 }
