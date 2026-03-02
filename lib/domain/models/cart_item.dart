@@ -2,7 +2,7 @@ import 'package:flutter_user_ecomm_app/domain/models/product.dart';
 
 class CartItem {
   final Product product;
-  int quantity;
+  final int quantity;
 
   CartItem({
     required this.product,
@@ -11,16 +11,10 @@ class CartItem {
 
   double get subtotal => product.price * quantity;
 
-  CartItem copyWith({int? quantity}) {
+  CartItem copyWith({Product? product, int? quantity}) {
     return CartItem(
-      product: product,
+      product: product ?? this.product,
       quantity: quantity ?? this.quantity,
     );
-  }
-
-  void increaseQty() {
-    if (quantity > 1) {
-      quantity--;
-    }
   }
 }
