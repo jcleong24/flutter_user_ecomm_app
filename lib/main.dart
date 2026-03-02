@@ -1,15 +1,17 @@
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_user_ecomm_app/data/repositories/mock_product_repository.dart';
-import 'package:flutter_user_ecomm_app/data/repositories/product_repository.dart';
-import 'package:flutter_user_ecomm_app/firebase_options.dart';
-import 'bloc/product_bloc.dart';
-import 'bloc/product_event.dart';
 import 'core/routers/app_router.dart';
 import 'core/theme/app_theme.dart';
 
-void main() async {
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'domain/bloc/product/product_bloc.dart';
+import 'domain/bloc/product/product_event.dart';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter_user_ecomm_app/data/repositories/product_repository.dart';
+import 'package:flutter_user_ecomm_app/firebase_options.dart';
+
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
@@ -18,7 +20,8 @@ void main() async {
     MultiRepositoryProvider(
       providers: [
         RepositoryProvider<ProductRepository>(
-            create: (context) => MockProductRepository())
+            create: (context) =>
+                FirebaseProductRepository(FirebaseFirestore.instance)),
       ],
       child: MultiBlocProvider(
         providers: [
