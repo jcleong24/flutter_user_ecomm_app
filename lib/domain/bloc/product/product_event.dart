@@ -14,3 +14,12 @@ class ProductRequested extends ProductEvent {
 class ProductRefreshed extends ProductEvent {
   const ProductRefreshed();
 }
+
+class ProductDetailsRequested extends ProductEvent {
+  final String productId;
+
+  const ProductDetailsRequested(this.productId);
+
+  @override
+  List<Object?> get props => [productId];
+}
