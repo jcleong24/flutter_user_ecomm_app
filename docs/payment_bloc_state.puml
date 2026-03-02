@@ -1,0 +1,16 @@
+@startuml payment_bloc_state_machine
+title Payment Bloc - State Machine
+[*] --> Idle
+
+Idle --> Initiating : InitiatePayment(orderId, amount)
+Initiating --> AwaitingConfirmation : PaymentIntentCreated(clientSecret)
+
+AwaitingConfirmation --> Approved : PaymentSucceeded(txnId)
+AwaitingConfirmation --> Declined : PaymentDeclined(code, msg)
+AwaitingConfirmation --> Error : PaymentError(msg)
+
+Approved --> [*]
+Declined --> [*]
+Error --> [*]
+
+@enduml

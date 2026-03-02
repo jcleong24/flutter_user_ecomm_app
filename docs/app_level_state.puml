@@ -1,5 +1,5 @@
-@startuml app_loading_state
-title App-Level - Loading State
+@startuml app_level_state_handling
+title App-Level - State Handling
 
 [*] --> Loading
 

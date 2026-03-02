@@ -1,5 +1,5 @@
-@startuml ecommerce_model
-
+@startuml ecomm_uml_diagram
+title Ecommerce App - UML Diagram
 enum OrderStatus {
   PENDING
   PAID

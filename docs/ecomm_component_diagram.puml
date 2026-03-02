@@ -1,0 +1,48 @@
+@startuml bloc_architecture_overview
+title E-Commerce Application Layered Architecture (BLoC Pattern)
+package "UI (Screens)" {
+  [ProductListScreen]
+  [ProductDetailsScreen]
+  [CartScreen]
+  [CheckoutScreen]
+}
+
+package "BLoC Layer" {
+  [ProductBloc]
+  [CartBloc]
+  [OrderBloc]
+  [PaymentBloc]
+}
+
+package "Data Layer" {
+  interface ProductRepository
+  interface OrderRepository
+  interface PaymentService
+}
+
+package "Firebase / External" {
+  [Firestore]
+  [Backend API]
+  [Stripe Sandbox]
+}
+
+' UI -> BLoC
+[ProductListScreen] --> [ProductBloc]
+[ProductDetailsScreen] --> [ProductBloc]
+[ProductDetailsScreen] --> [CartBloc]
+[CartScreen] --> [CartBloc]
+[CheckoutScreen] --> [OrderBloc]
+[CheckoutScreen] --> [PaymentBloc]
+
+' BLoC -> Repositories/Services
+[ProductBloc] --> ProductRepository
+[OrderBloc] --> OrderRepository
+[PaymentBloc] --> PaymentService
+
+' Repositories/Services -> External
+ProductRepository --> [Firestore]
+OrderRepository --> [Firestore]
+PaymentService --> [Backend API]
+[Backend API] --> [Stripe Sandbox]
+
+@enduml

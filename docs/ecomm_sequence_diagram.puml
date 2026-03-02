@@ -1,4 +1,5 @@
-@startuml ecommerce_checkout_with_gateway
+@startuml ecommerce_sequence_diagram
+title E-Commerce App - Sequence Diagram
 
 actor User
 participant Product
