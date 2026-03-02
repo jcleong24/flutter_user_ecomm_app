@@ -3,6 +3,7 @@ import 'core/routers/app_router.dart';
 import 'core/theme/app_theme.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'domain/bloc/cart/cart_bloc.dart';
 import 'domain/bloc/product/product_bloc.dart';
 import 'domain/bloc/product/product_event.dart';
 
@@ -30,6 +31,7 @@ Future<void> main() async {
               productRepository: context.read<ProductRepository>(),
             )..add(const ProductRequested()),
           ),
+          BlocProvider<CartBloc>(create: (context) => CartBloc()),
         ],
         child: const MyApp(),
       ),
