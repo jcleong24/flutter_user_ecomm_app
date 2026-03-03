@@ -28,7 +28,7 @@ class CartItemRemovedEvent extends CartEvent {
 }
 
 class CartItemQtyIncreaseEvent extends CartEvent {
-  final Product productId;
+  final String productId;
 
   const CartItemQtyIncreaseEvent(this.productId);
 
@@ -37,7 +37,7 @@ class CartItemQtyIncreaseEvent extends CartEvent {
 }
 
 class CartItemQtyDecreaseEvent extends CartEvent {
-  final Product productId;
+  final String productId;
 
   const CartItemQtyDecreaseEvent(this.productId);
 

@@ -47,6 +47,7 @@ class CartScreen extends StatelessWidget {
                       final item = state.cartItems[index];
                       final p = item.product;
 
+                      final id = p.id;
                       return ListTile(
                         leading: ClipRect(
                           // borderRadius: BorderRadius.circular(8),
@@ -83,7 +84,7 @@ class CartScreen extends StatelessWidget {
                                 onPressed: () {
                                   context
                                       .read<CartBloc>()
-                                      .add(CartItemQtyDecreaseEvent(p));
+                                      .add(CartItemQtyDecreaseEvent(id));
                                 },
                               ),
                               Text(
@@ -95,7 +96,7 @@ class CartScreen extends StatelessWidget {
                                 onPressed: () {
                                   context
                                       .read<CartBloc>()
-                                      .add(CartItemQtyIncreaseEvent(p));
+                                      .add(CartItemQtyIncreaseEvent(id));
                                 },
                               ),
                               IconButton(
@@ -103,7 +104,7 @@ class CartScreen extends StatelessWidget {
                                 onPressed: () {
                                   context
                                       .read<CartBloc>()
-                                      .add(CartItemRemovedEvent(p));
+                                      .add(CartItemQtyDecreaseEvent(id));
                                 },
                               ),
                             ],
