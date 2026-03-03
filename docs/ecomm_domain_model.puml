@@ -54,6 +54,15 @@ package "Domain Layer" {
     +subtotal(): double
   }
 
+  class OrderItem {
+    productId: String
+    name: String
+    price: double
+    quantity: int
+    imageUrl: String
+    +subtotal(): double
+  }
+
   class Order {
     id: String
     +totalAmount: double
@@ -74,7 +83,7 @@ package "Domain Layer" {
   ' Relationships
   ' =========================
   CartItem "*" --> "1" Product : product
-  Order "1" *-- "*" CartItem : items (composition)
+  Order "1" *-- "*" OrderItem : items (snapshot)
   Order "1" o-- "*" PaymentTransaction : payment attempts (retries)
 
   ' =========================
@@ -84,6 +93,12 @@ package "Domain Layer" {
   Order is the business record.
   - Created first (status=PENDING)
   - totalAmount derived from CartItems
+  end note
+
+  note right of OrderItem
+  OrderItem is an immutable snapshot of a product at checkout;
+  - captures name/price at time of purchase
+  - not affected by future Product changes
   end note
 
   note right of PaymentTransaction

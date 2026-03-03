@@ -2,73 +2,103 @@
 title E-Commerce App - Sequence Diagram
 
 actor User
-participant Product
-participant CartItem
+
+participant ProductUI
+participant CartUI
+participant CheckoutUI
+
+participant CartBloc
+participant OrderBloc
+participant PaymentBloc
+
 participant Order
-participant PaymentTransaction
+participant OrderItem
+participant PaymentTxn
+
 participant Backend
-participant "Payment Gateway\n(Stripe Sandbox)" as Gateway
+participant Gateway
 
 == Add To Cart ==
+User -> ProductUI : Tap "Add to Cart"
+ProductUI --> CartBloc : addItem(product)
+activate CartBloc
+CartBloc -> CartBloc : update cart state
+CartBloc --> ProductUI : update cart UI
+deactivate CartBloc
 
-User -> Product : Select product
-User -> CartItem : Add product (qty)
+== Proceed To Checkout ==
+User -> CartUI : Tap "Proceed to Checkout"
+CartUI -> CheckoutUI : Navigate to Checkout
 
-== Create Order ==
 
-User -> CartItem : Proceed to checkout
-CartItem -> Order : createOrder()
+== Create Order (PENDING) ==
+User -> CheckoutUI : Tap "Place Order"
+CheckutUI -> OrderBloc : createOrder(cartItems)
+activate OrderBloc
+
+loop For each CartItem
+    OrderBloc -> OrderItem : create snapshot
+    activate OrderItem
+    OrderItem --> OrderBloc : orderItem
+    deactivate OrderItem
+end
+
+OrderBloc -> Order : new Order(orderItems)
 activate Order
 Order -> Order : status = PENDING
+Order -> Order : calculate totalAmount
 deactivate Order
 
 == Initiate Payment ==
 
-User -> Order : Pay order
-Order -> PaymentTransaction : createTransaction()
-activate PaymentTransaction
-PaymentTransaction -> PaymentTransaction : status = INITIATED
-deactivate PaymentTransaction
+User -> CheckoutUI : Confirm Payment
+CheckoutUI -> PaymentBloc : initiatePayment(orderId, amount)
+activate PaymentBloc
 
-== Call Backend ==
+PaymentBloc -> PaymentTxn : createTransaction()
+activate PaymentTxn
+PaymentTxn --> PaymentBloc : clientSecretstatus = INITIATED
+deactivate PaymentTxn
 
-PaymentTransaction -> Backend : requestPayment(orderId, amount)
+PaymentBloc -> Backend : requestPaymentIntent(orderId, amount)
 activate Backend
-
 Backend -> Gateway : createPaymentIntent()
 activate Gateway
-Gateway --> Backend : clientSecret / response
+Gateway --> Backend : clientSecret
 deactivate Gateway
 
-Backend --> PaymentTransaction : paymentInitiated()
+Backend --> PaymentBloc : paymentIntentCreated
 deactivate Backend
 
 == User Confirms Payment ==
 
 User -> Gateway : confirm payment (card input)
 activate Gateway
-Gateway --> Backend : payment result (APPROVED / DECLINED)
+Gateway --> Backend : payment result\n(APPROVED / DECLINED)
 deactivate Gateway
 
 activate Backend
-Backend --> PaymentTransaction : update status
+Backend --> PaymentBloc : updateTransactionStatus(txnId)
 deactivate Backend
 
 == Update Order ==
 
 alt Payment APPROVED
-    PaymentTransaction -> PaymentTransaction : status = APPROVED
-    PaymentTransaction --> Order : notifySuccess()
-    activate Order
-    Order -> Order : markAsPaid()
+    PaymentBloc -> PaymentTxn : status = APPROVED
+    PaymentBloc --> OrderBloc : notifySuccess(orderId)
+    activate OrderBloc
+    OrderBloc -> Order : markAsPaid()
     Order -> Order : status = PAID
-    deactivate Order
+    OrderBloc --> CheckoutUI : Show Success Message
+    deactivate OrderBloc
+
 else Payment DECLINED
-    PaymentTransaction -> PaymentTransaction : status = DECLINED
-    PaymentTransaction --> Order : notifyFailure()
-    activate Order
+    PaymentBloc -> PaymentTxn : status = DECLINED
+    PaymentBloc --> OrderBloc : notifyFailure(orderId)
+    activate OrderBloc
     Order -> Order : status = FAILED
-    deactivate Order
+    OrderBloc --> CheckoutUI : Show Failure Message
+    deactivate OrderBloc
 end
 
 @enduml
