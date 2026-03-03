@@ -1,30 +1,55 @@
-import 'package:flutter_user_ecomm_app/domain/enums/order_status.dart';
-import 'package:flutter_user_ecomm_app/domain/models/cart_item.dart';
+import '../enums/order_status.dart';
+import 'order_item.dart';
 
 class Order {
-  final String id;
+  final String id; // empty before assigning Firestore
+  final double totalAmount;
+  final OrderStatus status;
   final DateTime createdAt;
-  final List<CartItem> items;
-  OrderStatus status;
+  final List<OrderItem> items;
 
-  Order({
+  const Order({
     required this.id,
-    required this.items,
+    required this.totalAmount,
+    required this.status,
     required this.createdAt,
-    this.status = OrderStatus.pending,
+    required this.items,
   });
 
-  double get totalAmount => items.fold(0, (sum, item) => sum + item.subtotal);
+  Order copyWith({
+    String? id,
+    double? totalAmount,
+    OrderStatus? status,
+    DateTime? createdAt,
+    List<OrderItem>? items,
+  }) =>
+      Order(
+        id: id ?? this.id,
+        totalAmount: totalAmount ?? this.totalAmount,
+        status: status ?? this.status,
+        createdAt: createdAt ?? this.createdAt,
+        items: items ?? this.items,
+      );
 
-  void markAsPaid() {
-    status = OrderStatus.paid;
-  }
+  Map<String, dynamic> toJson() => {
+        'id': id,
+        'totalAmount': totalAmount,
+        'status': status.name,
+        'createdAt': createdAt.toIso8601String(),
+        'items': items.map((item) => item.toJson()).toList(),
+      };
 
-  void markAsFailed() {
-    status = OrderStatus.failed;
-  }
+  static Order fromCartItems({
+    required List<OrderItem> items,
+  }) {
+    final total = items.fold<double>(0.0, (sum, i) => sum + i.subtotal);
 
-  void cancel() {
-    status = OrderStatus.cancelled;
+    return Order(
+      id: '',
+      totalAmount: total,
+      status: OrderStatus.pending,
+      createdAt: DateTime.now(),
+      items: items,
+    );
   }
 }
