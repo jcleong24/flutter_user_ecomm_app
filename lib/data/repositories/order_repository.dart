@@ -20,7 +20,16 @@ class FirebaseOrderRepository implements OrderRepository {
 
   @override
   Future<String> createOrder(domain.Order order) async {
-    final docRef = await firestore.collection('orders').add(order.toJson());
+    final docRef = await firestore.collection('orders').add({
+      'totalAmount': order.totalAmount,
+      'status': order.status.name,
+      'createdAt': order.createdAt.toIso8601String(),
+      'items': order.items.map((item) => item.toJson()).toList(),
+    });
+
+    // generated orderId from firestore
+    await docRef.update({'id': docRef.id});
+
     return docRef.id;
   }
 
