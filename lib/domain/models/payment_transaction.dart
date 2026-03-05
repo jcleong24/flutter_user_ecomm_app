@@ -8,11 +8,14 @@ class PaymentTransaction {
   final String? responseMessage;
   final DateTime createdAt;
 
+  final String orderId;
+
   const PaymentTransaction({
     required this.transactionId,
     required this.amount,
     required this.status,
     required this.createdAt,
+    required this.orderId,
     this.responseCode,
     this.responseMessage,
   });
@@ -24,5 +27,6 @@ class PaymentTransaction {
         'responseCode': responseCode,
         'responseMessage': responseMessage,
         'createdAt': createdAt.toIso8601String(),
+        'orderId': orderId,
       };
 }
