@@ -4,7 +4,8 @@ import '../../domain/enums/payment_status.dart';
 import '../../domain/models/payment_transaction.dart';
 
 abstract class PaymentRepository {
-  Future<void> createTransaction(PaymentTransaction txn);
+  Future<String> createTransaction(
+      {required String orderId, required double amount});
 
   Future<void> updateTransactionStatus({
     required String
@@ -22,14 +23,30 @@ class FirebasePaymentRepository implements PaymentRepository {
   FirebasePaymentRepository(this.firestore);
 
   @override
-  Future<void> createTransaction(PaymentTransaction txn) async {
+  Future<String> createTransaction(
+      {required String orderId, required double amount}) async {
     // final docRef = await firestore.collection('payment_transactions').add({
-    await firestore
+    final docRef = firestore
         .collection('orders')
-        .doc(txn.orderId)
+        .doc(orderId)
         .collection('payment_transactions')
-        .doc(txn.transactionId)
-        .set(txn.toJson());
+        .doc();
+
+    final txn = PaymentTransaction(
+        transactionId: docRef.id,
+        orderId: orderId,
+        amount: amount,
+        status: PaymentStatus.initiated,
+        createdAt: DateTime.now(),
+        responseCode: null,
+        responseMessage: null);
+
+    await docRef.set({
+      ...txn.toJson(),
+      'createdAt': FieldValue.serverTimestamp(),
+    });
+
+    return docRef.id;
   }
 
   @override
