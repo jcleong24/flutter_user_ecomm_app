@@ -1,16 +1,101 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../core/theme/style_manager.dart';
+
+import '../domain/bloc/payment/payment_bloc.dart';
+import '../domain/bloc/payment/payment_event.dart';
+import '../domain/bloc/payment/payment_state.dart';
+import '../domain/enums/payment_status.dart';
 
 class PaymentScreen extends StatelessWidget {
-  const PaymentScreen({super.key});
+  final String orderId;
+  final double amount;
+
+  const PaymentScreen({
+    super.key,
+    required this.orderId,
+    required this.amount,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Payment'),
+        title: Text('Payment', style: StyleManager.headingSmall()),
       ),
-      body: const Center(
-        child: Text('Payment Screen'),
+      body: BlocConsumer<PaymentBloc, PaymentState>(
+        listener: (context, state) {
+          if (state.status == PaymentStatus.approved) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Payment Approved')),
+            );
+          } else if (state.status == PaymentStatus.declined) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text(state.errorMessage ?? 'Payment Declined')),
+            );
+          } else if (state.status == PaymentStatus.error) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text(state.errorMessage ?? 'Payment Error')),
+            );
+          }
+        },
+        builder: (context, state) {
+          final isInitiated = state.transactionId != null;
+
+          return Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Text('Order: $orderId', style: StyleManager.textSmall()),
+                const SizedBox(height: 8),
+                Text('Amount: RM ${amount.toStringAsFixed(2)}',
+                    style: StyleManager.headingSmall()),
+                const SizedBox(height: 16),
+                ElevatedButton(
+                  onPressed:
+                      state.status == PaymentStatus.initiated && isInitiated
+                          ? null
+                          : () {
+                              context.read<PaymentBloc>().add(
+                                    PaymentStartedEvent(
+                                        orderId: orderId, amount: amount),
+                                  );
+                            },
+                  child:
+                      Text(isInitiated ? 'Payment Initiated' : 'Start Payment'),
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  'TransactionId: ${state.transactionId ?? '-'}',
+                  style: StyleManager.textSmall(),
+                ),
+                const SizedBox(height: 24),
+                ElevatedButton(
+                  onPressed: !isInitiated
+                      ? null
+                      : () {
+                          context
+                              .read<PaymentBloc>()
+                              .add(const PaymentMockApprovedEvent());
+                        },
+                  child: const Text('Mock Approve'),
+                ),
+                const SizedBox(height: 12),
+                OutlinedButton(
+                  onPressed: !isInitiated
+                      ? null
+                      : () {
+                          context.read<PaymentBloc>().add(
+                              const PaymentMockDeclinedEvent(
+                                  reason: 'Insufficient funds'));
+                        },
+                  child: const Text('Mock Decline'),
+                ),
+              ],
+            ),
+          );
+        },
       ),
     );
   }
