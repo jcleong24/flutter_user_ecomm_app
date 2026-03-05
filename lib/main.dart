@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_user_ecomm_app/data/repositories/payment_repository.dart';
 import 'package:flutter_user_ecomm_app/domain/bloc/order/order_bloc.dart';
 import 'core/routers/app_router.dart';
 import 'core/theme/app_theme.dart';
@@ -29,6 +30,10 @@ Future<void> main() async {
         RepositoryProvider<OrderRepository>(
           create: (context) =>
               FirebaseOrderRepository(FirebaseFirestore.instance),
+        ),
+        RepositoryProvider<PaymentRepository>(
+          create: (context) =>
+              FirebasePaymentRepository(FirebaseFirestore.instance),
         ),
       ],
       child: MultiBlocProvider(
