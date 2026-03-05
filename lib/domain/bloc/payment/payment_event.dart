@@ -38,3 +38,7 @@ class PaymentMockDeclinedEvent extends PaymentEvent {
 class PaymentResetEvent extends PaymentEvent {
   const PaymentResetEvent();
 }
+
+class PaymentStripConfirmedEvent extends PaymentEvent {
+  const PaymentStripConfirmedEvent();
+}

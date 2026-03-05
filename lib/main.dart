@@ -1,5 +1,8 @@
+import 'package:cloud_functions/cloud_functions.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:flutter_user_ecomm_app/data/repositories/payment_repository.dart';
+import 'package:flutter_user_ecomm_app/data/services/stripe_payment_service.dart';
 import 'package:flutter_user_ecomm_app/domain/bloc/order/order_bloc.dart';
 import 'core/routers/app_router.dart';
 import 'core/theme/app_theme.dart';
@@ -18,6 +21,11 @@ import 'package:flutter_user_ecomm_app/firebase_options.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  Stripe.publishableKey =
+      "pk_test_51T4F8QDcytiORkzmPs4zFbbuLKIgOvRYhzkN9NcgXbuF1FNvJrISE27gcQpPOAtA2Era5UUjgVSVrUOsk1hvlF5V00ssbx3bZu"; // your Stripe test publishable key
+  await Stripe.instance.applySettings();
+
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
@@ -35,6 +43,9 @@ Future<void> main() async {
         RepositoryProvider<PaymentRepository>(
           create: (context) =>
               FirebasePaymentRepository(FirebaseFirestore.instance),
+        ),
+        RepositoryProvider<StripePaymentService>(
+          create: (_) => StripePaymentService(FirebaseFunctions.instance),
         ),
       ],
       child: MultiBlocProvider(
@@ -56,6 +67,7 @@ Future<void> main() async {
             create: (context) => PaymentBloc(
               paymentRepository: context.read<PaymentRepository>(),
               orderRepository: context.read<OrderRepository>(),
+              stripePaymentService: context.read<StripePaymentService>(),
             ),
           ),
         ],

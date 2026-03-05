@@ -37,19 +37,19 @@ class AppRouter {
           final data = state.extra as Map<String, dynamic>?;
 
           final orderId = data?['orderId'] as String?;
-          final amount = data?['amount'];
+          final amountRaw = data?['amount'];
 
-          if (orderId == null || amount == null) {
+          if (orderId == null || amountRaw == null) {
             // fallback UI so it doesn't crash
             return const Scaffold(
               body: Center(
-                child: Text('Missing orderId/amount for PaymentScreen'),
+                child: Text('Missing orderId/amount'),
               ),
             );
           }
           return PaymentScreen(
             orderId: orderId,
-            amount: (amount as num).toDouble(),
+            amount: (amountRaw as num).toDouble(),
           );
         },
       ),

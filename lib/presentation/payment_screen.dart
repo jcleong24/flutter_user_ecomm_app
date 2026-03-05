@@ -77,9 +77,10 @@ class PaymentScreen extends StatelessWidget {
                       : () {
                           context
                               .read<PaymentBloc>()
-                              .add(const PaymentMockApprovedEvent());
+                              .add((const PaymentStripConfirmedEvent()));
+                          // .add(const PaymentMockApprovedEvent());
                         },
-                  child: const Text('Mock Approve'),
+                  child: const Text('Pay with Card (Stripe Sandbox)'),
                 ),
                 const SizedBox(height: 12),
                 OutlinedButton(
