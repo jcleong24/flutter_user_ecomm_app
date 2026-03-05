@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_user_ecomm_app/core/theme/style_manager.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/routers/route_name.dart';
