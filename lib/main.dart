@@ -7,6 +7,7 @@ import 'core/theme/app_theme.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'data/repositories/order_repository.dart';
 import 'domain/bloc/cart/cart_bloc.dart';
+import 'domain/bloc/payment/payment_bloc.dart';
 import 'domain/bloc/product/product_bloc.dart';
 import 'domain/bloc/product/product_event.dart';
 
@@ -50,7 +51,13 @@ Future<void> main() async {
             create: (context) => OrderBloc(
               orderRepository: context.read<OrderRepository>(),
             ),
-          )
+          ),
+          BlocProvider<PaymentBloc>(
+            create: (context) => PaymentBloc(
+              paymentRepository: context.read<PaymentRepository>(),
+              orderRepository: context.read<OrderRepository>(),
+            ),
+          ),
         ],
         child: const MyApp(),
       ),
