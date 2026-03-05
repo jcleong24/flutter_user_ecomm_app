@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_user_ecomm_app/domain/bloc/cart/cart_bloc.dart';
+import 'package:flutter_user_ecomm_app/presentation/cart/widgets/cart_icon_button.dart';
 
 import '../core/theme/style_manager.dart';
 import '../domain/bloc/cart/cart_event.dart';
@@ -29,6 +30,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Product Details', style: StyleManager.headingSmall()),
+        actions: const [CartIconButton()],
       ),
       body: BlocBuilder<ProductBloc, ProductState>(
         builder: (context, state) {

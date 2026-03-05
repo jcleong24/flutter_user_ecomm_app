@@ -8,6 +8,7 @@ import 'package:go_router/go_router.dart';
 import '../core/routers/route_name.dart';
 import '../domain/bloc/product/product_event.dart';
 import '../domain/bloc/product/product_state.dart';
+import 'cart/widgets/cart_icon_button.dart';
 
 class ProductListScreen extends StatelessWidget {
   const ProductListScreen({super.key});
@@ -16,16 +17,10 @@ class ProductListScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Product List', style: StyleManager.headingSmall()),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.refresh),
-            onPressed: () {
-              context.read<ProductBloc>().add(const ProductRefreshed());
-            },
-          ),
-        ],
-      ),
+          title: Text('Product List', style: StyleManager.headingSmall()),
+          actions: const [
+            CartIconButton(),
+          ]),
       body: BlocBuilder<ProductBloc, ProductState>(builder: (context, state) {
         switch (state.status) {
           case ProductStatus.onLoading:

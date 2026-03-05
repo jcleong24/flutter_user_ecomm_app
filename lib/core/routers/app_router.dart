@@ -1,7 +1,8 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_user_ecomm_app/core/routers/route_name.dart';
 import 'package:go_router/go_router.dart';
 import '../../presentation/product_details_screen.dart';
-import '../../presentation/cart_screen.dart';
+import '../../presentation/cart/cart_screen.dart';
 import '../../presentation/checkout_screen.dart';
 import '../../presentation/home_screen.dart';
 import '../../presentation/payment_screen.dart';
@@ -32,7 +33,25 @@ class AppRouter {
       ),
       GoRoute(
         path: RouteNames.payment,
-        builder: (context, state) => const PaymentScreen(),
+        builder: (context, state) {
+          final data = state.extra as Map<String, dynamic>?;
+
+          final orderId = data?['orderId'] as String?;
+          final amount = data?['amount'];
+
+          if (orderId == null || amount == null) {
+            // fallback UI so it doesn't crash
+            return const Scaffold(
+              body: Center(
+                child: Text('Missing orderId/amount for PaymentScreen'),
+              ),
+            );
+          }
+          return PaymentScreen(
+            orderId: orderId,
+            amount: (amount as num).toDouble(),
+          );
+        },
       ),
     ],
   );
