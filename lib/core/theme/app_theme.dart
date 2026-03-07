@@ -23,7 +23,7 @@ class AppTheme {
           foregroundColor: ColorManager.textPrimary,
           elevation: 0,
           centerTitle: false),
-      cardTheme: CardTheme(
+      cardTheme: CardThemeData(
         color: ColorManager.surface,
         elevation: AppElevation.e2,
         shape: RoundedRectangleBorder(
