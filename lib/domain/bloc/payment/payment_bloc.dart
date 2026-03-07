@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:flutter_user_ecomm_app/domain/bloc/payment/payment_event.dart';
@@ -20,8 +19,8 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
     required this.stripePaymentService,
   }) : super(const PaymentState()) {
     on<PaymentStartedEvent>(_onStartedEvent);
-    on<PaymentMockApprovedEvent>(_onMockApprovedEvent);
-    on<PaymentMockDeclinedEvent>(_onMockDeclinedEvent);
+    // on<PaymentMockApprovedEvent>(_onMockApprovedEvent);
+    // on<PaymentMockDeclinedEvent>(_onMockDeclinedEvent);
     on<PaymentStripConfirmedEvent>(_onStripeConfirmedEvent);
     on<PaymentResetEvent>(_onResetEvent);
   }
@@ -55,79 +54,79 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
     }
   }
 
-  Future<void> _onMockApprovedEvent(
-    PaymentMockApprovedEvent event,
-    Emitter<PaymentState> emit,
-  ) async {
-    final orderId = state.orderId;
-    final txnId = state.transactionId;
+  // Future<void> _onMockApprovedEvent(
+  //   PaymentMockApprovedEvent event,
+  //   Emitter<PaymentState> emit,
+  // ) async {
+  //   final orderId = state.orderId;
+  //   final txnId = state.transactionId;
 
-    if (orderId == null || txnId == null) {
-      emit(state.copyWith(
-        status: PaymentStatus.error,
-        errorMessage: 'Order ID or Transaction ID is null',
-      ));
-      return;
-    }
+  //   if (orderId == null || txnId == null) {
+  //     emit(state.copyWith(
+  //       status: PaymentStatus.error,
+  //       errorMessage: 'Order ID or Transaction ID is null',
+  //     ));
+  //     return;
+  //   }
 
-    try {
-      await paymentRepository.updateTransactionStatus(
-          orderId: orderId,
-          transactionId: txnId,
-          status: PaymentStatus.approved,
-          responseCode: '00',
-          responseMessage: 'APPROVED (MOCK)');
+  // try {
+  //     await paymentRepository.updateTransactionStatus(
+  //         orderId: orderId,
+  //         transactionId: txnId,
+  //         status: PaymentStatus.approved,
+  //         responseCode: '00',
+  //         responseMessage: 'APPROVED (MOCK)');
 
-      await orderRepository.updateOrderStatus(orderId: orderId, status: 'PAID');
+  //     await orderRepository.updateOrderStatus(orderId: orderId, status: 'PAID');
 
-      emit(state.copyWith(status: PaymentStatus.approved));
-    } catch (e) {
-      emit(state.copyWith(
-        status: PaymentStatus.error,
-        errorMessage: e.toString(),
-      ));
-      return;
-    }
-  }
+  //     emit(state.copyWith(status: PaymentStatus.approved));
+  //   } catch (e) {
+  //     emit(state.copyWith(
+  //       status: PaymentStatus.error,
+  //       errorMessage: e.toString(),
+  //     ));
+  //     return;
+  //   }
+  // }
 
-  Future<void> _onMockDeclinedEvent(
-      PaymentMockDeclinedEvent event, Emitter<PaymentState> emit) async {
-    final orderId = state.orderId;
-    final txnId = state.transactionId;
+  // Future<void> _onMockDeclinedEvent(
+  //     PaymentMockDeclinedEvent event, Emitter<PaymentState> emit) async {
+  //   final orderId = state.orderId;
+  //   final txnId = state.transactionId;
 
-    if (orderId == null || txnId == null) {
-      emit(state.copyWith(
-        status: PaymentStatus.error,
-        errorMessage: 'Payment not started yet.',
-      ));
-      return;
-    }
+  //   if (orderId == null || txnId == null) {
+  //     emit(state.copyWith(
+  //       status: PaymentStatus.error,
+  //       errorMessage: 'Payment not started yet.',
+  //     ));
+  //     return;
+  //   }
 
-    try {
-      await paymentRepository.updateTransactionStatus(
-        orderId: orderId,
-        transactionId: txnId,
-        status: PaymentStatus.declined,
-        responseCode: '05',
-        responseMessage: event.reason ?? 'DECLINED (MOCK)',
-      );
+  //   try {
+  //     await paymentRepository.updateTransactionStatus(
+  //       orderId: orderId,
+  //       transactionId: txnId,
+  //       status: PaymentStatus.declined,
+  //       responseCode: '05',
+  //       responseMessage: event.reason ?? 'DECLINED (MOCK)',
+  //     );
 
-      await orderRepository.updateOrderStatus(
-        orderId: orderId,
-        status: 'FAILED',
-      );
+  //     await orderRepository.updateOrderStatus(
+  //       orderId: orderId,
+  //       status: 'FAILED',
+  //     );
 
-      emit(state.copyWith(
-        status: PaymentStatus.declined,
-        errorMessage: event.reason ?? 'Payment declined.',
-      ));
-    } catch (e) {
-      emit(state.copyWith(
-        status: PaymentStatus.error,
-        errorMessage: e.toString(),
-      ));
-    }
-  }
+  //     emit(state.copyWith(
+  //       status: PaymentStatus.declined,
+  //       errorMessage: event.reason ?? 'Payment declined.',
+  //     ));
+  //   } catch (e) {
+  //     emit(state.copyWith(
+  //       status: PaymentStatus.error,
+  //       errorMessage: e.toString(),
+  //     ));
+  //   }
+  // }
 
   Future<void> _onStripeConfirmedEvent(
     PaymentStripConfirmedEvent event,
@@ -151,12 +150,11 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
       // Call Firebase function to create PaymentIntent
       final res = await stripePaymentService.createPaymentIntent(
         orderId: orderId,
+        transactionId: txnId,
         amountInCents: amountInCents,
         currency: 'myr',
       );
 
-      debugPrint("After Stripe payment amount RM: $amount");
-      debugPrint("Stripe payment cents: $amountInCents");
       final clientSecret = res['clientSecret'] as String;
 
       // Init PaymentSheet
@@ -173,19 +171,18 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
       await paymentRepository.updateTransactionStatus(
         orderId: orderId,
         transactionId: txnId,
-        status: PaymentStatus.approved,
+        status: PaymentStatus.submitted,
         responseCode: '00',
-        responseMessage: 'APPROVED (STRIPE)',
+        responseMessage:
+            'payment submitted successfully, awaiting confirmation',
       );
 
       await orderRepository.updateOrderStatus(
         orderId: orderId,
         status: 'PAID',
       );
-
       emit(state.copyWith(status: PaymentStatus.approved));
     } on StripeException catch (e) {
-      // Stripe "canceled" is still considered a failure/decline in UI
       final message = e.error.message ?? 'Payment cancelled';
       await paymentRepository.updateTransactionStatus(
         orderId: orderId,
