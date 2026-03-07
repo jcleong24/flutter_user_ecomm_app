@@ -1,9 +1,13 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_user_ecomm_app/core/theme/color_manager.dart';
 
 import 'package:flutter_user_ecomm_app/core/theme/style_manager.dart';
 import 'package:flutter_user_ecomm_app/domain/bloc/product/product_bloc.dart';
+import 'package:flutter_user_ecomm_app/presentation/home/widget/category_card.dart';
+import 'package:flutter_user_ecomm_app/presentation/home/widget/category_section.dart';
 import 'package:flutter_user_ecomm_app/presentation/response_page_padding.dart';
 import 'package:go_router/go_router.dart';
 
@@ -20,10 +24,81 @@ class ProductListScreen extends StatefulWidget {
 
 class _ProductListScreenState extends State<ProductListScreen> {
   final PageController _pageController = PageController(initialPage: 0);
+  Timer? _autoSlideTimer;
   int _currentPage = 0;
+
+  final List<CategoryCardData> _categories = const [
+    CategoryCardData(
+      title: 'Fruits',
+      icon: Icons.apple_outlined,
+    ),
+    CategoryCardData(
+      title: 'Vegetables',
+      icon: Icons.eco_outlined,
+    ),
+    CategoryCardData(
+      title: 'Drinks',
+      icon: Icons.local_drink_outlined,
+    ),
+    CategoryCardData(
+      title: 'Snacks',
+      icon: Icons.cookie_outlined,
+    ),
+  ];
+
+  final List<Map<String, dynamic>> _promoItems = [
+    {
+      'title': 'Fresh Food Delivered',
+      'subtitle': 'Get your groceries in minutes',
+      'icon': Icons.local_grocery_store_outlined,
+    },
+    {
+      'title': 'Special Discount',
+      'subtitle': 'Up to 30% off selected items',
+      'icon': Icons.discount_outlined,
+    },
+    {
+      'title': 'Daily Essentials',
+      'subtitle': 'Everything you need in one place',
+      'icon': Icons.shopping_basket_outlined,
+    },
+    {
+      'title': 'Free Shipping',
+      'subtitle': 'On orders over \$50',
+      'icon': Icons.local_shipping_outlined,
+    },
+    {
+      'title': 'Order Pickup',
+      'subtitle': 'Get your order delivered to your doorstep',
+      'icon': Icons.local_airport_outlined,
+    }
+  ];
+
+  void _startAutoSlide() {
+    _autoSlideTimer?.cancel();
+
+    _autoSlideTimer = Timer.periodic(const Duration(seconds: 8), (timer) {
+      if (!mounted || !_pageController.hasClients || _promoItems.isEmpty)
+        return;
+
+      final nextPage = (_currentPage + 1) % _promoItems.length;
+
+      _pageController.animateToPage(
+        nextPage,
+        duration: const Duration(milliseconds: 600),
+        curve: Curves.easeInOut,
+      );
+    });
+  }
+
+  void _stopAutoSlide() {
+    _autoSlideTimer?.cancel();
+  }
 
   @override
   void dispose() {
+    _pageController.dispose();
+    _stopAutoSlide();
     _pageController.dispose();
     super.dispose();
   }
@@ -256,37 +331,62 @@ class _ProductListScreenState extends State<ProductListScreen> {
                         const SizedBox(height: 16),
                         SizedBox(
                           height: 180,
-                          child: PageView(
-                            controller: _pageController,
-                            onPageChanged: (index) {
-                              setState(() {
-                                _currentPage = index;
-                              });
+                          child: NotificationListener<ScrollNotification>(
+                            onNotification: (notification) {
+                              if (notification is ScrollStartNotification) {
+                                _stopAutoSlide();
+                              } else if (notification
+                                  is ScrollEndNotification) {
+                                _startAutoSlide();
+                              }
+                              return false;
                             },
-                            children: [
-                              _buildPromoCard(
-                                  title: 'Fresh Food Delivered',
-                                  subtitle: 'Get yoru groceries in minutes',
-                                  icon: Icons.local_grocery_store_outlined),
-                              _buildPromoCard(
-                                title: 'Special Discount',
-                                subtitle: 'Up to 30% off selected items',
-                                icon: Icons.discount_outlined,
-                              ),
-                              _buildPromoCard(
-                                title: 'Daily Essentials',
-                                subtitle: 'Everything you need in one place',
-                                icon: Icons.shopping_basket_outlined,
-                              ),
-                            ],
+                            child: PageView.builder(
+                              controller: _pageController,
+                              itemCount: _promoItems.length,
+                              onPageChanged: (index) {
+                                setState(() {
+                                  _currentPage = index;
+                                });
+                              },
+                              itemBuilder: (context, index) {
+                                final item = _promoItems[index];
+
+                                return AnimatedBuilder(
+                                  animation: _pageController,
+                                  builder: (context, child) {
+                                    double scale = 1.0;
+
+                                    if (_pageController.hasClients &&
+                                        _pageController
+                                            .position.haveDimensions) {
+                                      final page = _pageController.page ??
+                                          _currentPage.toDouble();
+                                      final diff = (page - index).abs();
+                                      scale =
+                                          (1 - (diff * 0.06)).clamp(0.94, 1.0);
+                                    }
+
+                                    return Transform.scale(
+                                      scale: scale,
+                                      child: child,
+                                    );
+                                  },
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 2),
+                                    child: _buildPromoCard(
+                                      title: item['title'] as String,
+                                      subtitle: item['subtitle'] as String,
+                                      icon: item['icon'] as IconData,
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
                           ),
                         ),
                         const SizedBox(height: 12),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: List.generate(
-                              3, (index) => _buildIndicator(index)),
-                        ),
                         // Expanded(
                         //   child: ListView.builder(
                         //     itemCount: state.products.length,
@@ -312,6 +412,10 @@ class _ProductListScreenState extends State<ProductListScreen> {
                         //     context.push('${RouteNames.productDetails}/${p.id}');
                         //   },
                         // );
+
+                        CategorySection(
+                          categories: _categories,
+                        ),
                       ],
                     ),
                   ),
