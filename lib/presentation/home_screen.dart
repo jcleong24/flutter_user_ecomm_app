@@ -3,14 +3,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_user_ecomm_app/core/theme/color_manager.dart';
 
 import 'package:flutter_user_ecomm_app/core/theme/style_manager.dart';
-import 'package:flutter_user_ecomm_app/core/theme/values_manager.dart';
 import 'package:flutter_user_ecomm_app/domain/bloc/product/product_bloc.dart';
+import 'package:flutter_user_ecomm_app/presentation/response_page_padding.dart';
 import 'package:go_router/go_router.dart';
 
 import '../core/routers/route_name.dart';
 import '../domain/bloc/product/product_event.dart';
 import '../domain/bloc/product/product_state.dart';
-import 'cart/widgets/cart_icon_button.dart';
 
 class ProductListScreen extends StatefulWidget {
   const ProductListScreen({super.key});
@@ -20,6 +19,125 @@ class ProductListScreen extends StatefulWidget {
 }
 
 class _ProductListScreenState extends State<ProductListScreen> {
+  final PageController _pageController = PageController(initialPage: 0);
+  int _currentPage = 0;
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
+  }
+
+  Widget _buildPromoCard({
+    required String title,
+    required String subtitle,
+    required IconData icon,
+  }) {
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 2, vertical: 0),
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(24),
+        gradient: const LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            ColorManager.primary,
+            ColorManager.primaryVariant,
+          ],
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.08),
+            blurRadius: 16,
+            offset: const Offset(0, 8),
+          ),
+        ],
+      ),
+      child: Row(
+        children: [
+          Expanded(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: StyleManager.headingSmall().copyWith(
+                    color: Colors.white,
+                  ),
+                ),
+                const SizedBox(height: 5),
+                Text(
+                  subtitle,
+                  style: StyleManager.button().copyWith(
+                    color: ColorManager.whiteTransparent,
+                    fontWeight: FontWeight.w400,
+                  ),
+                ),
+                const SizedBox(height: 16),
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 14,
+                    vertical: 8,
+                  ),
+                  decoration: BoxDecoration(
+                    color: ColorManager.borderTransparent,
+                    borderRadius: BorderRadius.circular(14),
+                  ),
+                  child: Text(
+                    'Shop Now',
+                    style: StyleManager.button().copyWith(
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(width: 16),
+          Positioned(
+            top: 16,
+            right: 16,
+            child: Material(
+              color: Colors.transparent,
+              child: Ink(
+                // width: 60,
+                decoration: const ShapeDecoration(
+                  color: ColorManager.borderTransparent,
+                  shape: CircleBorder(),
+                ),
+                child: IconButton(
+                  iconSize: 35,
+                  icon: const Icon(Icons.shopping_bag_outlined),
+                  color: ColorManager.white,
+                  onPressed: () {},
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildIndicator(int index) {
+    final isActive = _currentPage == index;
+
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 250),
+      margin: const EdgeInsets.symmetric(horizontal: 3),
+      width: isActive ? 20 : 8,
+      height: 8,
+      decoration: BoxDecoration(
+        color: isActive
+            ? ColorManager.primary
+            : ColorManager.border.withOpacity(0.5),
+        borderRadius: BorderRadius.circular(20),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -38,29 +156,24 @@ class _ProductListScreenState extends State<ProductListScreen> {
             return Container(
                 decoration: BoxDecoration(
                     color: ColorManager.backgroundColor.withOpacity(0.1)),
-                child: Column(
-                  mainAxisSize: MainAxisSize.max,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Padding(
-                      padding:
-                          const EdgeInsetsDirectional.fromSTEB(20, 83, 0, 0),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.max,
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Expanded(
-                            child: Text(
-                              'Find our best products',
-                              style: StyleManager.headingSemiMedium(),
-                              textAlign: TextAlign.start,
+                child: SafeArea(
+                  child: ResponsivePagePadding(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          mainAxisSize: MainAxisSize.max,
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Expanded(
+                              child: Text(
+                                'Find the best products',
+                                style: StyleManager.headingSemiMedium(),
+                                textAlign: TextAlign.start,
+                              ),
                             ),
-                          ),
-                          Flexible(
-                            child: Padding(
-                              padding: const EdgeInsetsDirectional.fromSTEB(
-                                  0, 0, 20, 0),
+                            Flexible(
                               child: Row(
                                 mainAxisSize: MainAxisSize.max,
                                 mainAxisAlignment: MainAxisAlignment.end,
@@ -95,21 +208,14 @@ class _ProductListScreenState extends State<ProductListScreen> {
                                   ),
                                 ],
                               ),
-                            ),
-                          )
-                        ],
-                      ),
-                    ),
-                    Padding(
-                      padding:
-                          const EdgeInsetsDirectional.fromSTEB(0, 24, 20, 8),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.max,
-                        children: [
-                          Expanded(
-                            child: Padding(
-                              padding: const EdgeInsetsDirectional.fromSTEB(
-                                  20, 0, 0, 0),
+                            )
+                          ],
+                        ),
+                        const SizedBox(height: 16),
+                        Row(
+                          mainAxisSize: MainAxisSize.max,
+                          children: [
+                            Expanded(
                               child: Container(
                                 width: double.infinity,
                                 height: 56,
@@ -138,45 +244,78 @@ class _ProductListScreenState extends State<ProductListScreen> {
                                               16, 0, 0, 0),
                                       child: Text(
                                         'Search',
-                                        style: StyleManager.button(),
+                                        style: StyleManager.caption(),
                                       ),
                                     ),
                                   ],
                                 ),
                               ),
                             ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Expanded(
-                      child: ListView.builder(
-                        itemCount: state.products.length,
-                        itemBuilder: (context, index) {
-                          final p = state.products[index];
-                          return ListTile(
-                            title: Text(p.name),
-                            subtitle: Text('RM ${p.price.toStringAsFixed(2)}'),
-                            trailing: const Icon(Icons.chevron_right),
-                            onTap: () {
-                              context
-                                  .push('${RouteNames.productDetails}/${p.id}');
+                          ],
+                        ),
+                        const SizedBox(height: 16),
+                        SizedBox(
+                          height: 180,
+                          child: PageView(
+                            controller: _pageController,
+                            onPageChanged: (index) {
+                              setState(() {
+                                _currentPage = index;
+                              });
                             },
-                          );
-                        },
-                      ),
+                            children: [
+                              _buildPromoCard(
+                                  title: 'Fresh Food Delivered',
+                                  subtitle: 'Get yoru groceries in minutes',
+                                  icon: Icons.local_grocery_store_outlined),
+                              _buildPromoCard(
+                                title: 'Special Discount',
+                                subtitle: 'Up to 30% off selected items',
+                                icon: Icons.discount_outlined,
+                              ),
+                              _buildPromoCard(
+                                title: 'Daily Essentials',
+                                subtitle: 'Everything you need in one place',
+                                icon: Icons.shopping_basket_outlined,
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: List.generate(
+                              3, (index) => _buildIndicator(index)),
+                        ),
+                        // Expanded(
+                        //   child: ListView.builder(
+                        //     itemCount: state.products.length,
+                        //     itemBuilder: (context, index) {
+                        //       final p = state.products[index];
+                        //       return ListTile(
+                        //         title: Text(p.name),
+                        //         subtitle: Text('RM ${p.price.toStringAsFixed(2)}'),
+                        //         trailing: const Icon(Icons.chevron_right),
+                        //         onTap: () {
+                        //           context
+                        //               .push('${RouteNames.productDetails}/${p.id}');
+                        //         },
+                        //       );
+                        //     },
+                        //   ),
+                        // ),
+                        // ListTile(
+                        //   title: Text(p.name),
+                        //   subtitle: Text('RM ${p.price.toStringAsFixed(2)}'),
+                        //   trailing: const Icon(Icons.chevron_right),
+                        //   onTap: () {
+                        //     context.push('${RouteNames.productDetails}/${p.id}');
+                        //   },
+                        // );
+                      ],
                     ),
-                  ],
+                  ),
                 ));
-
-          // ListTile(
-          //   title: Text(p.name),
-          //   subtitle: Text('RM ${p.price.toStringAsFixed(2)}'),
-          //   trailing: const Icon(Icons.chevron_right),
-          //   onTap: () {
-          //     context.push('${RouteNames.productDetails}/${p.id}');
-          //   },
-          // );
 
           case ProductStatus.error:
             return Center(
