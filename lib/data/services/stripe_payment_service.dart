@@ -8,6 +8,7 @@ class StripePaymentService {
 
   Future<Map<String, dynamic>> createPaymentIntent({
     required String orderId,
+    required String transactionId,
     required int amountInCents,
     String currency = 'myr',
   }) async {
@@ -15,6 +16,7 @@ class StripePaymentService {
 
     final res = await callable.call({
       'orderId': orderId,
+      'transactionId': transactionId,
       'amount': amountInCents,
       'currency': currency,
     });
