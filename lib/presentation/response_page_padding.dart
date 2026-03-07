@@ -15,7 +15,7 @@ class ResponsivePagePadding extends StatelessWidget {
         final width = constraints.maxWidth;
 
         double start = 20;
-        double top = 45;
+        double top = 35;
         double end = 20;
         double bottom = 0;
         double maxWidth = 430;

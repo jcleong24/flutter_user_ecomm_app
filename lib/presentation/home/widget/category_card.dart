@@ -1,25 +1,16 @@
 import 'package:flutter/material.dart';
 import '../../../core/theme/color_manager.dart';
 import '../../../core/theme/style_manager.dart';
-
-class CategoryCardData {
-  final String title;
-  final IconData icon;
-  final VoidCallback? onTap;
-
-  const CategoryCardData({
-    required this.title,
-    required this.icon,
-    this.onTap,
-  });
-}
+import '../models/category_card_data.dart';
 
 class CategoryCard extends StatelessWidget {
-  final CategoryCardData data;
+  final CategoryCardData category;
+  final VoidCallback? onTap;
 
   const CategoryCard({
     super.key,
-    required this.data,
+    required this.category,
+    this.onTap,
   });
 
   @override
@@ -42,7 +33,7 @@ class CategoryCard extends StatelessWidget {
       ),
       child: InkWell(
         borderRadius: BorderRadius.circular(20),
-        onTap: data.onTap,
+        onTap: onTap,
         child: Padding(
           padding: const EdgeInsets.all(12),
           child: Column(
@@ -56,14 +47,14 @@ class CategoryCard extends StatelessWidget {
                   shape: BoxShape.circle,
                 ),
                 child: Icon(
-                  data.icon,
+                  category.icon,
                   color: ColorManager.primary,
                   size: 26,
                 ),
               ),
               const SizedBox(height: 12),
               Text(
-                data.title,
+                category.title,
                 style: StyleManager.button(),
                 textAlign: TextAlign.center,
                 maxLines: 1,
