@@ -33,21 +33,21 @@ class StyleManager {
   static TextStyle headingSmall() =>
       _base(fontSize: 20, fontWeight: FontWeightManager.medium, height: 1.5);
   static TextStyle headingSemiMedium() =>
-      _base(fontSize: 20, fontWeight: FontWeightManager.semibold, height: 1.5);
+      _base(fontSize: 27, fontWeight: FontWeightManager.medium, height: 1.5);
   static TextStyle headingMedium() =>
-      _base(fontSize: 24, fontWeight: FontWeightManager.semibold, height: 1.5);
+      _base(fontSize: 30, fontWeight: FontWeightManager.semibold, height: 1.5);
   static TextStyle headingLarge() =>
-      _base(fontSize: 28, fontWeight: FontWeightManager.bold, height: 1.5);
+      _base(fontSize: 36, fontWeight: FontWeightManager.bold, height: 1.5);
 
   // Labels / Buttons\
   static TextStyle button() => _base(
-      fontSize: 14,
-      fontWeight: FontWeightManager.medium,
+      fontSize: 16,
+      fontWeight: FontWeightManager.regular,
       height: 1.5,
-      color: ColorManager.primary);
+      color: ColorManager.textPrimary);
 
   static TextStyle caption() => _base(
-      fontSize: 12,
+      fontSize: 14,
       fontWeight: FontWeightManager.medium,
       height: 1.5,
       color: ColorManager.textSecondary);

@@ -9,8 +9,9 @@ class ColorManager {
   static const Color backgroundColor = Color(0xFFF5F5F5);
   static const Color surface = Colors.white;
   static const Color textPrimary = Color(0xCC111827);
-  static const Color textSecondary = Color(0xFF6B7280);
+  static const Color textSecondary = Color(0xCC6B7280);
   static const Color border = Color(0xCCE5E7EB);
+  // static Color border = Colors.white.withOpacity(0.16);
 
   // Status
   static const Color success = Color(0xFF16A34A);
