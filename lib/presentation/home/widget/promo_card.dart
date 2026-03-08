@@ -73,7 +73,7 @@ class PromoCard extends StatelessWidget {
                           vertical: 8,
                         ),
                         decoration: BoxDecoration(
-                          color: ColorManager.borderTransparent,
+                          color: ColorManager.border,
                           borderRadius: BorderRadius.circular(14),
                         ),
                         child: Text(
@@ -96,11 +96,11 @@ class PromoCard extends StatelessWidget {
               color: Colors.transparent,
               child: Ink(
                 decoration: const ShapeDecoration(
-                  color: ColorManager.borderTransparent,
+                  color: Colors.transparent,
                   shape: CircleBorder(),
                 ),
                 child: IconButton(
-                  iconSize: 35,
+                  iconSize: 25,
                   icon: Icon(icon),
                   color: ColorManager.white,
                   onPressed: onIconPressed,
