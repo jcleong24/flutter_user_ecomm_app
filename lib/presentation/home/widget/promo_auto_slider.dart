@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_user_ecomm_app/presentation/home/models/promo_item.dart';
 import 'package:flutter_user_ecomm_app/presentation/home/widget/promo_card.dart';
-import 'package:flutter_user_ecomm_app/presentation/home/widget/promo_indicator.dart';
+import 'package:flutter_user_ecomm_app/presentation/widgets/custom_page_indicator.dart';
 
 class PromoSlider extends StatefulWidget {
   final List<PromoItem> items;
@@ -124,7 +124,7 @@ class _PromoSliderState extends State<PromoSlider> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: List.generate(
             widget.items.length,
-            (index) => PromoIndicator(
+            (index) => CustomPageIndicator(
               isActive: _currentPage == index,
             ),
           ),
