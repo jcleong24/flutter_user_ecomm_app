@@ -8,8 +8,9 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final VoidCallback? onBackPressed;
   final double elevation;
   final Color iconColor;
-  final IconData trailingIcon;
+  final IconData? trailingIcon;
   final VoidCallback? onTrailingPressed;
+  final Widget? trailingWidget;
 
   const CustomAppBar(
       {super.key,
@@ -17,11 +18,12 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
       this.onBackPressed,
       this.elevation = 0.0,
       this.iconColor = Colors.black,
-      required this.trailingIcon,
-      this.onTrailingPressed});
+      this.trailingIcon,
+      this.onTrailingPressed,
+      this.trailingWidget});
 
   @override
-  Size get preferredSize => const Size.fromHeight(kToolbarHeight);
+  Size get preferredSize => const Size.fromHeight(kToolbarHeight + 10);
 
   @override
   Widget build(BuildContext context) {
@@ -39,11 +41,12 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
         ),
         title: Text(title, style: StyleManager.headingSemiMedium()),
         actions: [
-          IconButton(
-            icon: Icon(trailingIcon),
-            color: iconColor,
-            onPressed: onTrailingPressed,
-          ),
+          trailingWidget ??
+              IconButton(
+                icon: Icon(trailingIcon),
+                color: iconColor,
+                onPressed: onTrailingPressed,
+              ),
         ],
       ),
     );

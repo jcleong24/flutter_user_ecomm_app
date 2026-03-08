@@ -28,7 +28,7 @@ class CartIconButton extends StatelessWidget {
               right: 6,
               top: 6,
               child: Container(
-                padding: const EdgeInsets.all(2),
+                // padding: const EdgeInsets.all(2),
                 decoration: const BoxDecoration(
                     color: Colors.red, shape: BoxShape.circle),
                 constraints: const BoxConstraints(minHeight: 15, minWidth: 15),
