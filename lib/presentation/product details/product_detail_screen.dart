@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_user_ecomm_app/core/theme/color_manager.dart';
 import 'package:flutter_user_ecomm_app/domain/bloc/cart/cart_bloc.dart';
+import 'package:flutter_user_ecomm_app/presentation/cart/widgets/cart_icon_button.dart';
 import 'package:flutter_user_ecomm_app/presentation/widgets/custom_app_bar.dart';
 
 import '../../core/theme/style_manager.dart';
@@ -39,12 +40,13 @@ class _ProductDetailScreenState extends State<ProductDetailsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(
+      appBar: const CustomAppBar(
         title: '',
-        trailingIcon: Icons.shopping_cart_outlined,
-        onTrailingPressed: () {
-          Navigator.pop(context);
-        },
+        trailingWidget: CartIconButton(),
+        // trailingIcon: Icons.shopping_cart_outlined,
+        // onTrailingPressed: () {
+        //   Navigator.pop(context);
+        // },
       ),
       body: BlocBuilder<ProductBloc, ProductState>(
         builder: (context, state) {
