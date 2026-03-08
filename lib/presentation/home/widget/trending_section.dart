@@ -106,7 +106,7 @@ class _TrendingSectionState extends State<TrendingSection> {
               decoration: BoxDecoration(
                 color: _currentPage == index
                     ? Theme.of(context).primaryColor
-                    : Colors.grey.withOpacity(0.35),
+                    : Colors.grey.withValues(alpha: 0.35),
                 borderRadius: BorderRadius.circular(20),
               ),
             ),

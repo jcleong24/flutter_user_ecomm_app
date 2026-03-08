@@ -81,7 +81,7 @@ class ProductListScreen extends StatelessWidget {
             case ProductStatus.onLoaded:
               return Container(
                 decoration: BoxDecoration(
-                  color: ColorManager.backgroundColor.withOpacity(0.1),
+                  color: ColorManager.backgroundColorTransparent,
                 ),
                 child: SafeArea(
                   child: ResponsivePagePadding(

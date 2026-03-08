@@ -45,10 +45,11 @@ class TrendingCard extends StatelessWidget {
                     borderRadius: BorderRadius.circular(16),
                     child: Container(
                       width: double.infinity,
-                      color: ColorManager.backgroundColor.withOpacity(0.35),
-                      child: product.imageUrl.isNotEmpty
+                      color:
+                          ColorManager.backgroundColor.withValues(alpha: 0.35),
+                      child: product.thumbnailUrl.isNotEmpty
                           ? Image.network(
-                              product.imageUrl,
+                              product.thumbnailUrl,
                               fit: BoxFit.cover,
                               errorBuilder: (context, error, stackTrace) {
                                 return const Center(
