@@ -71,7 +71,7 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
         name: p.name,
         price: p.price,
         quantity: c.quantity,
-        imageUrl: p.imageUrl,
+        thumbnailUrl: p.thumbnailUrl,
       );
     }).toList();
   }
