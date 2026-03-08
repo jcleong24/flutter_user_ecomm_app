@@ -7,7 +7,9 @@ import '../../../domain/bloc/cart/cart_bloc.dart';
 import '../../../domain/bloc/cart/cart_state.dart';
 
 class CartIconButton extends StatelessWidget {
-  const CartIconButton({super.key});
+  final Color iconColor;
+
+  const CartIconButton({super.key, this.iconColor = Colors.white});
 
   @override
   Widget build(BuildContext context) {
@@ -17,11 +19,20 @@ class CartIconButton extends StatelessWidget {
       return Stack(
         alignment: Alignment.center,
         children: [
-          IconButton(
-            onPressed: () {
-              context.push(RouteNames.cart);
-            },
-            icon: const Icon(Icons.shopping_cart_outlined),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Container(
+              decoration: BoxDecoration(
+                color: Colors.black.withOpacity(0.35), // background color
+                shape: BoxShape.circle, // circular background
+              ),
+              child: IconButton(
+                onPressed: () {
+                  context.push(RouteNames.cart);
+                },
+                icon: Icon(Icons.shopping_cart_outlined, color: iconColor),
+              ),
+            ),
           ),
           if (count > 0)
             Positioned(
