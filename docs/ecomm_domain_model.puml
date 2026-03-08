@@ -46,7 +46,8 @@ package "Domain Layer" {
     description: String
     price: double
     stockQty: int
-    imageUrl: String
+    thumbnailUrl: String
+    imageUrls: List<String>
   }
 
   class CartItem {
@@ -59,7 +60,7 @@ package "Domain Layer" {
     name: String
     price: double
     quantity: int
-    imageUrl: String
+    thumbnailUrl: String
     +subtotal(): double
   }
 
