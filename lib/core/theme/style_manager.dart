@@ -30,6 +30,11 @@ class StyleManager {
       _base(fontSize: 24, fontWeight: FontWeightManager.medium, height: 1.5);
 
   // Heading
+  static TextStyle headingExtraSmall() => _base(
+      fontSize: 18,
+      fontWeight: FontWeightManager.medium,
+      height: 1.5,
+      color: ColorManager.textPrimary);
   static TextStyle headingSmall() =>
       _base(fontSize: 20, fontWeight: FontWeightManager.medium, height: 1.5);
   static TextStyle headingSemiMedium() =>
