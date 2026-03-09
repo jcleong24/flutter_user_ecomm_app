@@ -33,7 +33,7 @@ class CartBloc extends Bloc<CartEvent, CartState> {
 
   void _onCartItemRemoved(CartItemRemovedEvent event, Emitter<CartState> emit) {
     final items =
-        state.cartItems.where((i) => i.product.id != event.productId).toList();
+        state.cartItems.where((i) => i.product.id != event.product.id).toList();
     emit(CartState(cartItems: items));
   }
 
