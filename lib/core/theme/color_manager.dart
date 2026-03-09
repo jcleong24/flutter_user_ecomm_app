@@ -14,10 +14,11 @@ class ColorManager {
   static const Color surface = Colors.white;
   static const Color textPrimary = Color(0xCC111827);
   static const Color textSecondary = Color(0xCC6B7280);
-  static const Color border = Color(0xCCE5E7EB);
-  static const Color borderTransparent = Color(0x2EFFFFFF);
+  static const Color borderButton = Color(0xCCE5E7EB);
+  static Color borderButtonTransparent = borderButton.withValues(alpha: 0.5);
 
-  static Color borderButton = Colors.grey.withValues(alpha: 0.35);
+  static Color border = Colors.grey.withValues(alpha: 0.35);
+  static Color borderTransparent = border.withValues(alpha: 0.8);
 
   static const Color white = Color(0xFFFFFFFF);
   static const Color whiteTransparent = Color(0xE5FFFFFF);

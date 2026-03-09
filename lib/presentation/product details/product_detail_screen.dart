@@ -10,7 +10,7 @@ import '../../domain/bloc/cart/cart_event.dart';
 import '../../domain/bloc/product/product_bloc.dart';
 import '../../domain/bloc/product/product_event.dart';
 import '../../domain/bloc/product/product_state.dart';
-import '../widgets/custom_page_indicator.dart';
+import 'widgets/product_image_carousel.dart';
 
 class ProductDetailsScreen extends StatefulWidget {
   final String productId;
@@ -23,7 +23,6 @@ class ProductDetailsScreen extends StatefulWidget {
 
 class _ProductDetailScreenState extends State<ProductDetailsScreen> {
   late final PageController _pageController;
-  int _currentPage = 0;
 
   @override
   void initState() {
@@ -60,69 +59,11 @@ class _ProductDetailScreenState extends State<ProductDetailsScreen> {
                 color: ColorManager.backgroundColorTransparent,
                 child: SingleChildScrollView(
                   child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      SizedBox(
+                      ProductImageCarousel(
+                        imageUrls: product.imageUrls,
                         height: 380,
-                        width: double.infinity,
-                        child: PageView.builder(
-                          controller: _pageController,
-                          itemCount: product.imageUrls.length,
-                          onPageChanged: (index) {
-                            setState(() {
-                              _currentPage = index;
-                            });
-                          },
-                          itemBuilder: (context, index) {
-                            final imageUrl = product.imageUrls[index];
-                            return AnimatedBuilder(
-                              animation: _pageController,
-                              builder: (context, child) {
-                                double scale = 1.0;
-                                if (_pageController.hasClients &&
-                                    _pageController.position.haveDimensions) {
-                                  final page = _pageController.page ??
-                                      _currentPage.toDouble();
-                                  final diff = (page - index).abs();
-                                  scale = (1 - (diff * 0.06)).clamp(0.9, 1.0);
-                                }
-
-                                return Transform.scale(
-                                  scale: scale,
-                                  child: child,
-                                );
-                              },
-                              child: Image.network(
-                                imageUrl,
-                                fit: BoxFit.cover,
-                                loadingBuilder:
-                                    (context, child, loadingProgress) {
-                                  if (loadingProgress == null) return child;
-                                  return const Center(
-                                    child: CircularProgressIndicator(),
-                                  );
-                                },
-                                errorBuilder: (context, error, stackTrace) =>
-                                    const Center(
-                                  child: Icon(
-                                    Icons.image_not_supported_outlined,
-                                    size: 32,
-                                  ),
-                                ),
-                              ),
-                            );
-                          },
-                        ),
                       ),
-                      const SizedBox(height: 12),
-                      Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: List.generate(
-                            product.imageUrls.length,
-                            (index) => CustomPageIndicator(
-                              isActive: _currentPage == index,
-                            ),
-                          )),
                       Container(
                         width: double.infinity,
                         decoration: const BoxDecoration(
@@ -176,6 +117,7 @@ class _ProductDetailScreenState extends State<ProductDetailsScreen> {
                   ),
                 ),
               );
+
             case ProductStatus.error:
               return Center(
                 child: Column(

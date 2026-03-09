@@ -27,7 +27,7 @@ class HomeHeader extends StatelessWidget {
           children: [
             Ink(
               decoration: const ShapeDecoration(
-                color: ColorManager.border,
+                color: ColorManager.borderButton,
                 shape: CircleBorder(),
               ),
               child: IconButton(
@@ -39,7 +39,7 @@ class HomeHeader extends StatelessWidget {
             const SizedBox(width: 12),
             Ink(
               decoration: const ShapeDecoration(
-                color: ColorManager.border,
+                color: ColorManager.borderButton,
                 shape: CircleBorder(),
               ),
               child: IconButton(

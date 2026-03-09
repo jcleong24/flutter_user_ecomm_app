@@ -62,7 +62,7 @@ class ProductListScreen extends StatelessWidget {
     ),
     PromoItem(
       title: 'Order Pickup',
-      subtitle: 'Get your order delivered to your doorstep',
+      subtitle: 'Get your order delivered to \nyour doorstep',
       icon: Icons.local_airport_outlined,
     ),
   ];

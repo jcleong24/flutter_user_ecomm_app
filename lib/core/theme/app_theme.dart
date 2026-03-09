@@ -28,7 +28,7 @@ class AppTheme {
         elevation: AppElevation.e2,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(AppRadius.r16),
-          side: const BorderSide(color: ColorManager.border),
+          side: const BorderSide(color: ColorManager.backgroundColor),
         ),
       ),
       inputDecorationTheme: InputDecorationTheme(
@@ -36,11 +36,11 @@ class AppTheme {
         fillColor: ColorManager.surface,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(AppRadius.r12),
-          borderSide: const BorderSide(color: ColorManager.border),
+          borderSide: const BorderSide(color: ColorManager.backgroundColor),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(AppRadius.r12),
-          borderSide: const BorderSide(color: ColorManager.border),
+          borderSide: const BorderSide(color: ColorManager.backgroundColor),
         ),
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
