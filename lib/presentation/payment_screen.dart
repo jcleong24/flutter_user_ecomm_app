@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import '../../../core/theme/style_manager.dart';
 
+import '../core/routers/route_name.dart';
 import '../domain/bloc/payment/payment_bloc.dart';
 import '../domain/bloc/payment/payment_event.dart';
 import '../domain/bloc/payment/payment_state.dart';
@@ -32,9 +34,10 @@ class PaymentScreen extends StatelessWidget {
               ),
             );
           } else if (state.status == PaymentStatus.approved) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Payment Approved (Stripe)')),
-            );
+            context.go(RouteNames.paymentSuccess, extra: {
+              'orderId': orderId,
+              'amount': amount,
+            });
           } else if (state.status == PaymentStatus.declined) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(content: Text(state.errorMessage ?? 'Payment Declined')),
@@ -46,79 +49,97 @@ class PaymentScreen extends StatelessWidget {
           }
         },
         builder: (context, state) {
-          final isInitiated = state.transactionId != null;
-          final isWaitingConfirmation = state.status == PaymentStatus.submitted;
+          final isProcessing = state.status == PaymentStatus.initiated ||
+              state.status == PaymentStatus.submitted;
 
           return Padding(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(20),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                Text('Order: $orderId', style: StyleManager.textSmall()),
-                const SizedBox(height: 8),
-                Text(
-                  'Amount: RM ${amount.toStringAsFixed(2)}',
-                  style: StyleManager.headingSmall(),
+                Card(
+                  elevation: 2,
+                  child: Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Column(
+                      children: [
+                        Text(
+                          'Order Summary',
+                          style: StyleManager.headingSmall(),
+                        ),
+                        const SizedBox(height: 12),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text('Order ID', style: StyleManager.textSmall()),
+                            Expanded(
+                              child: Text(
+                                orderId,
+                                style: StyleManager.textSmall(),
+                                textAlign: TextAlign.right,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 8),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text('Total Amount',
+                                style: StyleManager.textSmall()),
+                            Text(
+                              'RM ${amount.toStringAsFixed(2)}',
+                              style: StyleManager.headingSmall(),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
-                const SizedBox(height: 16),
-                ElevatedButton(
-                  onPressed: (state.status == PaymentStatus.initiated ||
-                          isWaitingConfirmation)
-                      ? null
-                      : () {
-                          context.read<PaymentBloc>().add(
-                                PaymentStartedEvent(
-                                  orderId: orderId,
-                                  amount: amount,
-                                ),
-                              );
-                        },
-                  child:
-                      Text(isInitiated ? 'Payment Initiated' : 'Start Payment'),
-                ),
-                const SizedBox(height: 16),
-                Text(
-                  'TransactionId: ${state.transactionId ?? '-'}',
-                  style: StyleManager.textSmall(),
-                ),
-                const SizedBox(height: 12),
-                Text(
-                  'Status: ${state.status.name}',
-                  style: StyleManager.textSmall(),
-                ),
-                const SizedBox(height: 24),
-                if (isWaitingConfirmation) ...[
+                const SizedBox(height: 40),
+                if (isProcessing) ...[
                   const Center(child: CircularProgressIndicator()),
                   const SizedBox(height: 12),
                   Text(
-                    'Waiting for Stripe webhook confirmation...',
+                    state.status == PaymentStatus.submitted
+                        ? 'Waiting for Stripe webhook confirmation...'
+                        : 'Preparing payment...',
                     style: StyleManager.textSmall(),
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 24),
                 ],
                 ElevatedButton(
-                  onPressed: (!isInitiated || isWaitingConfirmation)
+                  onPressed: isProcessing
                       ? null
-                      : () {
-                          context.read<PaymentBloc>().add(
-                                const PaymentStripConfirmedEvent(),
-                              );
+                      : () async {
+                          final bloc = context.read<PaymentBloc>();
+
+                          // Step 1: create transaction first
+                          bloc.add(
+                            PaymentStartedEvent(
+                              orderId: orderId,
+                              amount: amount,
+                            ),
+                          );
+
+                          // Give bloc a short moment to create transaction
+                          await Future.delayed(
+                            const Duration(milliseconds: 300),
+                          );
+
+                          // Step 2: call Stripe PaymentSheet
+                          bloc.add(const PaymentStripConfirmedEvent());
                         },
-                  child: const Text('Pay with Card (Stripe Sandbox)'),
-                ),
-                const SizedBox(height: 12),
-                OutlinedButton(
-                  onPressed: (!isInitiated || isWaitingConfirmation)
-                      ? null
-                      : () {
-                          context.read<PaymentBloc>().add(
-                                const PaymentMockDeclinedEvent(
-                                  reason: 'Insufficient funds',
-                                ),
-                              );
-                        },
-                  child: const Text('Mock Decline'),
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                  ),
+                  child: const Text(
+                    'Pay with Card',
+                    style: TextStyle(fontSize: 16),
+                  ),
                 ),
               ],
             ),

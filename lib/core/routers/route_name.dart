@@ -5,5 +5,5 @@ class RouteNames {
   static const cart = '/cart';
   static const checkout = '/checkout';
   static const payment = '/payment';
-  // static const success = '/success';
+  static const paymentSuccess = '/payment_success';
 }

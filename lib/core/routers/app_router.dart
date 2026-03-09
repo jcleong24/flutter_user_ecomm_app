@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_user_ecomm_app/core/routers/route_name.dart';
 import 'package:go_router/go_router.dart';
+import '../../presentation/payment_success_screen.dart';
 import '../../presentation/product details/product_detail_screen.dart';
 import '../../presentation/cart/cart_screen.dart';
 import '../../presentation/checkout_screen.dart';
@@ -48,6 +49,27 @@ class AppRouter {
             );
           }
           return PaymentScreen(
+            orderId: orderId,
+            amount: (amountRaw as num).toDouble(),
+          );
+        },
+      ),
+      GoRoute(
+        path: RouteNames.paymentSuccess,
+        builder: (context, state) {
+          final data = state.extra as Map<String, dynamic>?;
+          final orderId = data?['orderId'] as String?;
+          final amountRaw = data?['amount'];
+          if (orderId == null || amountRaw == null) {
+            // fallback UI so it doesn't crash
+            return const Scaffold(
+              body: Center(
+                child: Text('Missing orderId/amount'),
+              ),
+            );
+          }
+
+          return PaymentSuccessScreen(
             orderId: orderId,
             amount: (amountRaw as num).toDouble(),
           );
