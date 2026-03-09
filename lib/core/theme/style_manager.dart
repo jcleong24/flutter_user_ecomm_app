@@ -18,6 +18,8 @@ class StyleManager {
   }
 
   // Text
+  static TextStyle textExtraSmall() =>
+      _base(fontSize: 14, fontWeight: FontWeightManager.regular, height: 1.5);
   static TextStyle textSmall() =>
       _base(fontSize: 14, fontWeight: FontWeightManager.regular, height: 1.5);
   static TextStyle textSemiMedium() =>

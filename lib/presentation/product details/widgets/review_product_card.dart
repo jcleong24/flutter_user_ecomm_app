@@ -103,7 +103,7 @@ class ReviewProductCard extends StatelessWidget {
           const SizedBox(height: 12),
           Text(
             reviewText,
-            style: StyleManager.textSmall(),
+            style: StyleManager.textExtraSmall(),
           ),
         ],
       ),
