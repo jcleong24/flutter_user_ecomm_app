@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_user_ecomm_app/core/theme/color_manager.dart';
 import 'package:flutter_user_ecomm_app/domain/bloc/cart/cart_bloc.dart';
 import 'package:flutter_user_ecomm_app/presentation/product%20details/widgets/cart_icon_button.dart';
+import 'package:flutter_user_ecomm_app/presentation/product%20details/widgets/color_page_indicator.dart';
 import 'package:flutter_user_ecomm_app/presentation/widgets/custom_app_bar.dart';
 
 import '../../core/theme/style_manager.dart';
@@ -23,6 +24,12 @@ class ProductDetailsScreen extends StatefulWidget {
 
 class _ProductDetailScreenState extends State<ProductDetailsScreen> {
   late final PageController _pageController;
+
+  final List<Color> _productColors = [
+    Colors.white,
+    const Color.fromARGB(255, 242, 202, 57),
+    Colors.black,
+  ];
 
   @override
   void initState() {
@@ -76,22 +83,42 @@ class _ProductDetailScreenState extends State<ProductDetailsScreen> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(product.name,
-                                style: StyleManager.headingSmall()),
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Expanded(
+                                  child: Text(product.name,
+                                      style: StyleManager.headingSmall()),
+                                ),
+                                const SizedBox(width: 8),
+                                Text(
+                                  'RM ${product.price.toStringAsFixed(2)}',
+                                  style: StyleManager.caption(),
+                                ),
+                              ],
+                            ),
                             const SizedBox(height: 12),
                             Text(product.description,
                                 style: StyleManager.textSmall()),
                             const SizedBox(height: 12),
-                            Text(
-                              'RM ${product.price.toStringAsFixed(2)}',
-                              style: StyleManager.headingSmall(),
-                            ),
+                            Text('Color',
+                                style: StyleManager.headingExtraSmall()),
+                            const SizedBox(height: 8),
+                            ColorPageIndicatorRow(
+                                colors: _productColors,
+                                currentIndex: _currentPage,
+                                onSelected: (index) {
+                                  _pageController.animateToPage(index,
+                                      duration:
+                                          const Duration(milliseconds: 220),
+                                      curve: Curves.easeInOut);
+                                }),
                             const SizedBox(height: 12),
                             Text(
-                              'Stock: ${product.stockQty}',
+                              'Available: ${product.stockQty}',
                               style: StyleManager.textSmall(),
                             ),
-                            const SizedBox(height: 24),
+                            const SizedBox(height: 20),
                             SizedBox(
                               width: double.infinity,
                               child: ElevatedButton.icon(
