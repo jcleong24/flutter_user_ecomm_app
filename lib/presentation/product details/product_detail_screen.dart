@@ -2,10 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_user_ecomm_app/core/theme/color_manager.dart';
 import 'package:flutter_user_ecomm_app/domain/bloc/cart/cart_bloc.dart';
+import 'package:flutter_user_ecomm_app/presentation/home/widget/home_header_sub.dart';
 import 'package:flutter_user_ecomm_app/presentation/product%20details/widgets/cart_icon_button.dart';
 import 'package:flutter_user_ecomm_app/presentation/product%20details/widgets/color_page_indicator.dart';
+import 'package:flutter_user_ecomm_app/presentation/product%20details/widgets/review_product_card.dart';
 import 'package:flutter_user_ecomm_app/presentation/widgets/custom_app_bar.dart';
+import 'package:go_router/go_router.dart';
 
+import '../../core/routers/route_name.dart';
 import '../../core/theme/style_manager.dart';
 import '../../domain/bloc/cart/cart_event.dart';
 import '../../domain/bloc/product/product_bloc.dart';
@@ -177,6 +181,17 @@ class _ProductDetailScreenState extends State<ProductDetailsScreen> {
                               'Available: ${product.stockQty}',
                               style: StyleManager.textSmall(),
                             ),
+                            const SizedBox(height: 15),
+                            const HomeHeaderSub(title: 'Review'),
+                            const SizedBox(height: 10),
+                            const ReviewProductCard(
+                                reviewerName: 'Tina Blakely',
+                                reviewDate: '3 years ago',
+                                reviewText:
+                                    'Good service, I would recommend it to others.',
+                                rating: 8.2,
+                                avatarUrl:
+                                    'https://plus.unsplash.com/premium_photo-1690579805273-fd0c7b08035d?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'),
                             const SizedBox(height: 20),
                             SizedBox(
                               width: double.infinity,
