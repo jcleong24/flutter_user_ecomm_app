@@ -24,7 +24,7 @@ class HomeHeaderSub extends StatelessWidget {
             context.push(RouteNames.home);
           },
           child: Text(
-            'View All',
+            'See All',
             style: StyleManager.caption(),
           ),
         ),
