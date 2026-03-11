@@ -4,7 +4,7 @@ class ColorManager {
   // Brand
   static const Color primary = Color(0xCCFF7622);
   static const Color primaryVariant = Color(0xFF7C3AED);
-  static const Color primaryTransparent = Color(0x99FF7622);
+  static Color primaryTransparent = primary.withValues(alpha: 0.35);
   static const Color secondary = Color(0xFFFFD1B4);
 
   // Background
